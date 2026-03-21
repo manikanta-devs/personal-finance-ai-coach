@@ -1,1 +1,4 @@
-streamlit\ngoogle-cloud\npandas\nnumpy
+streamlit
+google-cloud
+pandas
+numpy
