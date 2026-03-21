@@ -1,8 +1,4 @@
 streamlit
-google-cloud
 pandas
 numpy
-openai
 plotly
-python-dotenv
-requests
