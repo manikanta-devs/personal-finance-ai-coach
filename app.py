@@ -1,54 +1,57 @@
-import streamlit as st
+import json
 
-class FinancialCoach:
-    def __init__(self):
-        # Initialize the financial coach features
-        self.budget = {}  # to track budget
-        self.expenses = []  # to track expenses
+class FinancialDashboard:
+    def __init__(self, storage_file='data.json'):
+        self.storage_file = storage_file
+        self.data = self.load_data()
 
-    def add_budget(self, category, amount):
-        self.budget[category] = amount
-        st.success(f"Added budget for {category}: ${amount}")
+    def load_data(self):
+        try:
+            with open(self.storage_file, 'r') as f:
+                return json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            return {'expenses': [], 'budgets': [], 'savings_goals': []}
 
-    def add_expense(self, amount, category):
-        self.expenses.append((amount, category))
-        st.success(f"Added expense: ${amount} in {category}")
+    def save_data(self):
+        with open(self.storage_file, 'w') as f:
+            json.dump(self.data, f, indent=4)
 
-    def budget_overview(self):
-        st.write("### Budget Overview")
-        for category, amount in self.budget.items():
-            st.write(f"{category}: ${amount}")
+    def add_expense(self, description, amount):
+        self.data['expenses'].append({'description': description, 'amount': amount})
+        self.save_data()
 
-    def expense_summary(self):
-        st.write("### Expense Summary")
-        total = sum(exp[0] for exp in self.expenses)
-        st.write(f"Total Expenses: ${total}")
-        for exp in self.expenses:
-            st.write(f"Expense: ${exp[0]} in {exp[1]}")
+    def set_budget(self, category, amount):
+        self.data['budgets'].append({'category': category, 'amount': amount})
+        self.save_data()
 
-    def financial_insights(self):
-        # AI-powered insights can be added here
-        st.write("### Financial Insights")
-        # Simple insights based on expenses can be added here
-        for exp in self.expenses:
-            st.write(f"Consider revising your spending of ${exp[0]} in {exp[1]}")
+    def add_savings_goal(self, goal_name, target_amount):
+        self.data['savings_goals'].append({'goal_name': goal_name, 'target_amount': target_amount})
+        self.save_data()
 
-# Create a Streamlit application
+    def get_expenses(self):
+        return self.data['expenses']
+
+    def get_budgets(self):
+        return self.data['budgets']
+
+    def get_savings_goals(self):
+        return self.data['savings_goals']
+
+    def get_total_expenses(self):
+        return sum(exp['amount'] for exp in self.data['expenses'])
+
+    def get_budget_summary(self):
+        return {budget['category']: budget['amount'] for budget in self.data['budgets']}
+
+    def get_savings_goal_summary(self):
+        return {goal['goal_name']: goal['target_amount'] for goal in self.data['savings_goals']}
+
+# Example usage:
 if __name__ == '__main__':
-    st.title('Personal Finance AI Coach')
-    coach = FinancialCoach()
-    st.sidebar.header('Budget Management')
-    category = st.sidebar.text_input('Category')
-    budget_amount = st.sidebar.number_input('Budget Amount', min_value=0)
-    if st.sidebar.button('Add Budget'):
-        coach.add_budget(category, budget_amount)
-
-    st.sidebar.header('Expense Management')
-    expense_amount = st.sidebar.number_input('Expense Amount', min_value=0)
-    if st.sidebar.button('Add Expense'):
-        coach.add_expense(expense_amount, category)
-
-    # Display budget and expense reports
-    coach.budget_overview()
-    coach.expense_summary()
-    coach.financial_insights()
+    dashboard = FinancialDashboard()
+    dashboard.add_expense('Groceries', 50.00)
+    dashboard.set_budget('Food', 200.00)
+    dashboard.add_savings_goal('Vacation', 1500.00)
+    print('Total Expenses:', dashboard.get_total_expenses())
+    print('Budgets:', dashboard.get_budget_summary())
+    print('Savings Goals:', dashboard.get_savings_goal_summary())
