@@ -28,3 +28,6 @@ MANIFEST
 
 # VS Code settings
 .vscode/
+
+# Runtime data
+data.json
