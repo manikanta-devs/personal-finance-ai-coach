@@ -1,0 +1,20 @@
+{
+    "expenses": [
+        {
+            "description": "Groceries",
+            "amount": 50.0
+        }
+    ],
+    "budgets": [
+        {
+            "category": "Food",
+            "amount": 200.0
+        }
+    ],
+    "savings_goals": [
+        {
+            "goal_name": "Vacation",
+            "target_amount": 1500.0
+        }
+    ]
+}
