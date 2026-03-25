@@ -1,4 +1,6 @@
 import json
+from datetime import date
+from utils.age_calculator import calculate_age, years_to_retirement, retirement_date
 
 class FinancialDashboard:
     def __init__(self, storage_file='data.json'):
@@ -46,6 +48,23 @@ class FinancialDashboard:
     def get_savings_goal_summary(self):
         return {goal['goal_name']: goal['target_amount'] for goal in self.data['savings_goals']}
 
+    def get_age_summary(self, date_of_birth, retirement_age=65):
+        """
+        Return an age-based financial planning summary.
+
+        Parameters:
+        date_of_birth (date): The user's date of birth.
+        retirement_age (int): The target retirement age (default is 65).
+
+        Returns:
+        dict: A summary containing current age, years to retirement, and retirement date.
+        """
+        return {
+            'current_age': calculate_age(date_of_birth),
+            'years_to_retirement': years_to_retirement(date_of_birth, retirement_age),
+            'retirement_date': retirement_date(date_of_birth, retirement_age).isoformat(),
+        }
+
 # Example usage:
 if __name__ == '__main__':
     dashboard = FinancialDashboard()
@@ -55,3 +74,5 @@ if __name__ == '__main__':
     print('Total Expenses:', dashboard.get_total_expenses())
     print('Budgets:', dashboard.get_budget_summary())
     print('Savings Goals:', dashboard.get_savings_goal_summary())
+    dob = date(1990, 6, 15)
+    print('Age Summary:', dashboard.get_age_summary(dob))
